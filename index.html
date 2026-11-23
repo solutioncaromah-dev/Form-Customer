@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Form Detail Kerusakan Kendaraan</title>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --card: #ffffff;
+      --text: #14181f;
+      --muted: #5f697a;
+      --accent: #1d4ed8;
+      --accent-dark: #1e40af;
+      --border: #dfe4ec;
+      --danger: #dc2626;
+      --success: #15803d;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 20px 14px 48px;
+    }
+
+    .wrap {
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      background: #eff6ff;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 20px;
+      line-height: 1.3;
+    }
+
+    .sub {
+      margin: 0 0 16px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .progress-track {
+      height: 7px;
+      background: #e5e9f0;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 25%;
+      background: var(--accent);
+      transition: width 0.25s ease;
+    }
+
+    .step { display: none; }
+    .step.active { display: block; }
+
+    .field { margin-bottom: 14px; }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 15px;
+      font-family: inherit;
+      background: #fff;
+      color: var(--text);
+    }
+
+    textarea {
+      min-height: 96px;
+      resize: vertical;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12);
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 5px;
+      line-height: 1.4;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip-btn {
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .chip-btn.selected {
+      background: #eff6ff;
+      border-color: var(--accent);
+      color: var(--accent-dark);
+      font-weight: 600;
+    }
+
+    .preview-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .preview-list img {
+      width: 100%;
+      height: 84px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .summary-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 13px;
+      line-height: 1.55;
+      margin-top: 12px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    button {
+      flex: 1;
+      min-height: 46px;
+      border: none;
+      border-radius: 11px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-back {
+      background: #eef2f6;
+      color: var(--text);
+    }
+
+    .btn-next, .btn-submit {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-next:hover, .btn-submit:hover {
+      background: var(--accent-dark);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .msg-error {
+      color: var(--danger);
+      font-size: 13px;
+      margin-top: 8px;
+      min-height: 18px;
+    }
+
+    .done-box {
+      text-align: center;
+      padding: 12px 0;
+    }
+
+    .done-title {
+      color: var(--success);
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="badge" id="stepBadge">Langkah 1 dari 4</div>
+      <h1>Formulir Detail Kerusakan</h1>
+      <p class="sub">Isi bertahap agar tim kami bisa menyiapkan estimasi pengerjaan dengan lebih akurat.</p>
+
+      <div class="progress-track">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <form id="intakeForm" novalidate>
+        <div class="step active" data-step="1">
+          <div class="field">
+            <label for="nama">Nama Anda *</label>
+            <input type="text" id="nama" name="nama" placeholder="Contoh: Budi Santoso" required />
+          </div>
+          <div class="field">
+            <label for="no_hp">Nomor Handphone / WhatsApp *</label>
+            <input type="tel" id="no_hp" name="no_hp" placeholder="Contoh: 081234567890" required />
+            <div class="hint">Pastikan nomor aktif dan terhubung dengan WhatsApp.</div>
+          </div>
+        </div>
+
+        <div class="step" data-step="2">
+          <div class="field">
+            <label for="detail_kendaraan">Detail Kendaraan *</label>
+            <input type="text" id="detail_kendaraan" name="detail_kendaraan" placeholder="Contoh: Toyota Yaris 2021 - Silver" required />
+            <div class="hint">Tuliskan merek, model, tahun, dan warna bodi kendaraan.</div>
+          </div>
+        </div>
+
+        <div class="step" data-step="3">
+          <div class="field">
+            <label>Bantuan Cepat Jenis Kerusakan (Opsional)</label>
+            <div class="chips" id="quickTags">
+              <button type="button" class="chip-btn" data-tag="Baret halus">Baret halus</button>
+              <button type="button" class="chip-btn" data-tag="Baret dalam">Baret dalam</button>
+              <button type="button" class="chip-btn" data-tag="Penyok / kenteng">Penyok / kenteng</button>
+              <button type="button" class="chip-btn" data-tag="Cat terkelupas / kusam">Cat terkelupas / kusam</button>
+              <button type="button" class="chip-btn" data-tag="Bumper pecah / robek">Bumper pecah / robek</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="detail_kerusakan">Detail Kerusakan *</label>
+            <textarea id="detail_kerusakan" name="detail_kerusakan" placeholder="Jelaskan bagian panel mana yang rusak dan kondisi kerusakannya..." required></textarea>
+          </div>
+
+          <div class="field">
+            <label for="jenis_layanan">Pilih Jenis Layanan *</label>
+            <select id="jenis_layanan" name="jenis_layanan" required>
+              <option value="">-- Pilih layanan --</option>
+              <option value="Body Repair & Repaint">Body Repair & Repaint</option>
+              <option value="Partial Repaint">Partial Repaint</option>
+              <option value="Full Body Repaint">Full Body Repaint</option>
+              <option value="Auto Detailing & Coating">Auto Detailing & Coating</option>
+              <option value="Konsultasi / Estimasi Saja">Konsultasi / Estimasi Saja</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="step" data-step="4">
+          <div class="field">
+            <label for="photos">Upload Foto Kerusakan (Maks. 5 foto)</label>
+            <input type="file" id="photos" accept="image/*" multiple />
+            <div class="hint">Sertakan foto jarak dekat area kerusakan dan foto 1 panel utuh agar posisinya jelas.</div>
+            <div class="preview-list" id="previewList"></div>
+          </div>
+
+          <div class="summary-box" id="summaryBox"></div>
+        </div>
+
+        <div class="step" id="doneStep">
+          <div class="done-box">
+            <div class="done-title">Data Berhasil Dikirim</div>
+            <p class="sub">Terima kasih, detail kendaraan dan kerusakan sudah masuk ke rekap tim kami.</p>
+            <button type="button" class="btn-next" id="resetBtn">Isi Form Baru</button>
+          </div>
+        </div>
+
+        <div class="msg-error" id="errorMsg"></div>
+
+        <div class="actions" id="navActions">
+          <button type="button" class="btn-back" id="prevBtn" style="display:none;">Kembali</button>
+          <button type="button" class="btn-next" id="nextBtn">Lanjut</button>
+          <button type="submit" class="btn-submit" id="submitBtn" style="display:none;">Kirim Data</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxaFwTAJhpkiIT9p0hC81X3AimoO-Uluzrm0EcjDskakvbL3JJCVXB8x4i0cxPnGVPTwg/exec";
+
+    const totalSteps = 4;
+    let currentStep = 1;
+    let compressedPhotos = [];
+
+    const steps = document.querySelectorAll(".step[data-step]");
+    const doneStep = document.getElementById("doneStep");
+    const stepBadge = document.getElementById("stepBadge");
+    const progressBar = document.getElementById("progressBar");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const submitBtn = document.getElementById("submitBtn");
+    const navActions = document.getElementById("navActions");
+    const errorMsg = document.getElementById("errorMsg");
+    const summaryBox = document.getElementById("summaryBox");
+    const previewList = document.getElementById("previewList");
+    const form = document.getElementById("intakeForm");
+
+    document.querySelectorAll(".chip-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        btn.classList.toggle("selected");
+        const selected = Array.from(document.querySelectorAll(".chip-btn.selected")).map((el) => el.dataset.tag);
+        const ta = document.getElementById("detail_kerusakan");
+        if (selected.length && !ta.value.trim()) {
+          ta.value = "Jenis kerusakan: " + selected.join(", ") + ". ";
+        }
+      });
+    });
+
+    function showStep(stepNum) {
+      errorMsg.textContent = "";
+      currentStep = stepNum;
+
+      steps.forEach((el) => {
+        el.classList.toggle("active", Number(el.dataset.step) === currentStep);
+      });
+      doneStep.classList.remove("active");
+      navActions.style.display = "flex";
+
+      stepBadge.textContent = `Langkah ${currentStep} dari ${totalSteps}`;
+      progressBar.style.width = `${(currentStep / totalSteps) * 100}%`;
+
+      prevBtn.style.display = currentStep > 1 ? "inline-block" : "none";
+      nextBtn.style.display = currentStep < totalSteps ? "inline-block" : "none";
+      submitBtn.style.display = currentStep === totalSteps ? "inline-block" : "none";
+
+      if (currentStep === 4) {
+        renderSummary();
+      }
+    }
+
+    function validateStep(stepNum) {
+      if (stepNum === 1) {
+        const nama = document.getElementById("nama").value.trim();
+        const hp = document.getElementById("no_hp").value.trim();
+        if (!nama) return "Nama Anda wajib diisi.";
+        if (hp.replace(/\D/g, "").length < 8) return "Nomor handphone/WhatsApp belum valid.";
+      }
+      if (stepNum === 2) {
+        const ken = document.getElementById("detail_kendaraan").value.trim();
+        if (!ken) return "Detail kendaraan wajib diisi.";
+      }
+      if (stepNum === 3) {
+        const ker = document.getElementById("detail_kerusakan").value.trim();
+        const lay = document.getElementById("jenis_layanan").value.trim();
+        if (!ker) return "Detail kerusakan wajib diisi.";
+        if (!lay) return "Silakan pilih jenis layanan.";
+      }
+      return "";
+    }
+
+    function renderSummary() {
+      const nama = document.getElementById("nama").value.trim();
+      const hp = document.getElementById("no_hp").value.trim();
+      const ken = document.getElementById("detail_kendaraan").value.trim();
+      const ker = document.getElementById("detail_kerusakan").value.trim();
+      const lay = document.getElementById("jenis_layanan").value.trim();
+
+      summaryBox.innerHTML = `
+        <strong>Ringkasan Data:</strong><br/>
+        • <strong>Nama:</strong> ${escapeHtml(nama)}<br/>
+        • <strong>No. HP:</strong> ${escapeHtml(hp)}<br/>
+        • <strong>Kendaraan:</strong> ${escapeHtml(ken)}<br/>
+        • <strong>Layanan:</strong> ${escapeHtml(lay)}<br/>
+        • <strong>Kerusakan:</strong> ${escapeHtml(ker)}<br/>
+        • <strong>Foto siap kirim:</strong> ${compressedPhotos.length} foto
+      `;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, (m) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[m]));
+    }
+
+    nextBtn.addEventListener("click", () => {
+      const err = validateStep(currentStep);
+      if (err) {
+        errorMsg.textContent = err;
+        return;
+      }
+      showStep(currentStep + 1);
+    });
+
+    prevBtn.addEventListener("click", () => {
+      if (currentStep > 1) showStep(currentStep - 1);
+    });
+
+    document.getElementById("photos").addEventListener("change", async (e) => {
+      const files = Array.from(e.target.files || []).slice(0, 5);
+      compressedPhotos = [];
+      previewList.innerHTML = "";
+
+      for (const file of files) {
+        const compressed = await compressImage(file, 1280, 0.78);
+        if (compressed) {
+          compressedPhotos.push(compressed);
+          const img = document.createElement("img");
+          img.src = `data:${compressed.mimeType};base64,${compressed.base64}`;
+          previewList.appendChild(img);
+        }
+      }
+      if (currentStep === 4) renderSummary();
+    });
+
+    function compressImage(file, maxWidth, quality) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const img = new Image();
+          img.onload = () => {
+            let w = img.width;
+            let h = img.height;
+            if (w > maxWidth) {
+              h = Math.round((h * maxWidth) / w);
+              w = maxWidth;
+            }
+            const canvas = document.createElement("canvas");
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, w, h);
+            const dataUrl = canvas.toDataURL("image/jpeg", quality);
+            const base64 = dataUrl.split(",")[1];
+            resolve({ mimeType: "image/jpeg", base64 });
+          };
+          img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorMsg.textContent = "";
+
+      for (let s = 1; s <= totalSteps; s++) {
+        const err = validateStep(s);
+        if (err) {
+          showStep(s);
+          errorMsg.textContent = err;
+          return;
+        }
+      }
+
+      submitBtn.disabled = true;
+      prevBtn.disabled = true;
+      submitBtn.textContent = "Mengirim...";
+
+      const payload = {
+        nama: document.getElementById("nama").value.trim(),
+        no_hp: document.getElementById("no_hp").value.trim(),
+        detail_kendaraan: document.getElementById("detail_kendaraan").value.trim(),
+        detail_kerusakan: document.getElementById("detail_kerusakan").value.trim(),
+        jenis_layanan: document.getElementById("jenis_layanan").value.trim(),
+        photos: compressedPhotos
+      };
+
+      try {
+        await fetch(WEB_APP_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+
+        steps.forEach((el) => el.classList.remove("active"));
+        navActions.style.display = "none";
+        stepBadge.textContent = "Selesai";
+        progressBar.style.width = "100%";
+        doneStep.classList.add("active");
+      } catch (err) {
+        errorMsg.textContent = "Gagal mengirim data. Coba periksa koneksi internet lalu ulangi.";
+      } finally {
+        submitBtn.disabled = false;
+        prevBtn.disabled = false;
+        submitBtn.textContent = "Kirim Data";
+      }
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      form.reset();
+      compressedPhotos = [];
+      previewList.innerHTML = "";
+      document.querySelectorAll(".chip-btn.selected").forEach((el) => el.classList.remove("selected"));
+      showStep(1);
+    });
+  </script>
+</body>
+</html>
